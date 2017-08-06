@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btn_Confrim = new System.Windows.Forms.Button();
             this.RidIsR = new System.Windows.Forms.Label();
             this.CidIsR = new System.Windows.Forms.Label();
             this.txt_CId = new System.Windows.Forms.TextBox();
@@ -74,12 +76,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.btn_Confrim = new System.Windows.Forms.Button();
+            this.dvm = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.删除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.修改ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showPri = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.dvm.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -90,6 +96,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.showPri);
             this.splitContainer1.Panel1.Controls.Add(this.btn_Confrim);
             this.splitContainer1.Panel1.Controls.Add(this.RidIsR);
             this.splitContainer1.Panel1.Controls.Add(this.CidIsR);
@@ -142,6 +149,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(1261, 637);
             this.splitContainer1.SplitterDistance = 475;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // btn_Confrim
+            // 
+            this.btn_Confrim.Location = new System.Drawing.Point(64, 463);
+            this.btn_Confrim.Name = "btn_Confrim";
+            this.btn_Confrim.Size = new System.Drawing.Size(75, 23);
+            this.btn_Confrim.TabIndex = 17;
+            this.btn_Confrim.Text = "确定客户";
+            this.btn_Confrim.UseVisualStyleBackColor = true;
+            this.btn_Confrim.Click += new System.EventHandler(this.btn_Confrim_Click);
             // 
             // RidIsR
             // 
@@ -257,7 +274,7 @@
             // 
             this.btn_OpenS.Location = new System.Drawing.Point(309, 557);
             this.btn_OpenS.Name = "btn_OpenS";
-            this.btn_OpenS.Size = new System.Drawing.Size(104, 23);
+            this.btn_OpenS.Size = new System.Drawing.Size(122, 23);
             this.btn_OpenS.TabIndex = 9;
             this.btn_OpenS.Text = "打开调味品信息";
             this.btn_OpenS.UseVisualStyleBackColor = true;
@@ -267,7 +284,7 @@
             // 
             this.btn_OpenC.Location = new System.Drawing.Point(309, 505);
             this.btn_OpenC.Name = "btn_OpenC";
-            this.btn_OpenC.Size = new System.Drawing.Size(89, 23);
+            this.btn_OpenC.Size = new System.Drawing.Size(122, 23);
             this.btn_OpenC.TabIndex = 8;
             this.btn_OpenC.Text = "打开客户信息";
             this.btn_OpenC.UseVisualStyleBackColor = true;
@@ -290,6 +307,7 @@
             this.btn_Update.TabIndex = 6;
             this.btn_Update.Text = "修改";
             this.btn_Update.UseVisualStyleBackColor = true;
+            this.btn_Update.Click += new System.EventHandler(this.btn_Update_Click);
             // 
             // btn_Del
             // 
@@ -404,6 +422,7 @@
             this.txt_SPriOne.Name = "txt_SPriOne";
             this.txt_SPriOne.Size = new System.Drawing.Size(146, 21);
             this.txt_SPriOne.TabIndex = 3;
+            this.txt_SPriOne.TextChanged += new System.EventHandler(this.txt_SPriOne_TextChanged);
             // 
             // label4
             // 
@@ -528,6 +547,7 @@
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.ContextMenuStrip = this.dvm;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
             this.dataGridView1.Name = "dataGridView1";
@@ -535,16 +555,40 @@
             this.dataGridView1.RowTemplate.Height = 23;
             this.dataGridView1.Size = new System.Drawing.Size(782, 637);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
-            // btn_Confrim
+            // dvm
             // 
-            this.btn_Confrim.Location = new System.Drawing.Point(64, 463);
-            this.btn_Confrim.Name = "btn_Confrim";
-            this.btn_Confrim.Size = new System.Drawing.Size(75, 23);
-            this.btn_Confrim.TabIndex = 17;
-            this.btn_Confrim.Text = "确定客户";
-            this.btn_Confrim.UseVisualStyleBackColor = true;
-            this.btn_Confrim.Click += new System.EventHandler(this.btn_Confrim_Click);
+            this.dvm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.删除ToolStripMenuItem,
+            this.修改ToolStripMenuItem});
+            this.dvm.Name = "dvm";
+            this.dvm.Size = new System.Drawing.Size(101, 48);
+            // 
+            // 删除ToolStripMenuItem
+            // 
+            this.删除ToolStripMenuItem.Name = "删除ToolStripMenuItem";
+            this.删除ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.删除ToolStripMenuItem.Text = "删除";
+            this.删除ToolStripMenuItem.Click += new System.EventHandler(this.删除ToolStripMenuItem_Click);
+            // 
+            // 修改ToolStripMenuItem
+            // 
+            this.修改ToolStripMenuItem.Name = "修改ToolStripMenuItem";
+            this.修改ToolStripMenuItem.Size = new System.Drawing.Size(100, 22);
+            this.修改ToolStripMenuItem.Text = "修改";
+            this.修改ToolStripMenuItem.Click += new System.EventHandler(this.修改ToolStripMenuItem_Click);
+            // 
+            // showPri
+            // 
+            this.showPri.Location = new System.Drawing.Point(309, 602);
+            this.showPri.Name = "showPri";
+            this.showPri.Size = new System.Drawing.Size(122, 23);
+            this.showPri.TabIndex = 18;
+            this.showPri.Text = "显示所有特殊价格";
+            this.showPri.UseVisualStyleBackColor = true;
+            this.showPri.Visible = false;
+            this.showPri.Click += new System.EventHandler(this.showPri_Click);
             // 
             // Form1
             // 
@@ -561,6 +605,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.dvm.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -614,6 +659,10 @@
         private System.Windows.Forms.Label RidIsR;
         private System.Windows.Forms.Label CidIsR;
         private System.Windows.Forms.Button btn_Confrim;
+        private System.Windows.Forms.ContextMenuStrip dvm;
+        private System.Windows.Forms.ToolStripMenuItem 删除ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 修改ToolStripMenuItem;
+        private System.Windows.Forms.Button showPri;
     }
 }
 

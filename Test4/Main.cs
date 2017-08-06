@@ -17,6 +17,7 @@ namespace Test4
         static string CID_IS_NULL = "客户编号为空！";
         static string RID_IS_NULL = "商品编号为空！";
         DataTable table;
+        List<MData> list = new List<MData>();
 
         public Form1()
         {
@@ -154,26 +155,43 @@ namespace Test4
 
         private void txt_RId_TextChanged(object sender, EventArgs e)
         {
-            int id;
+            int rid;
+            int cid;
+            string price = string.Empty;
             if (txt_RId.Text.Trim().Length == 0)
             {
                 setRIdIsR(RID_IS_NULL, Color.Red);
                 return;
             }
-            else if (Int32.TryParse(txt_RId.Text.Trim(), out id))
+            else if (Int32.TryParse(txt_RId.Text.Trim(), out rid))
             {
-                string sql = String.Format("select * from Relish where [Id] = {0};", id);
+                cid = Convert.ToInt32(txt_CId.Text);
+                string sql1 = String.Format("select * from Part where [ClientId] = {0} and [RelishId] = {1};", cid, rid);
+
+                using (SQLiteDataReader reader = SqlHelper.ExecuteReader(sql1))
+                {
+                    if (reader.Read())
+                    {
+                        price = reader.GetValue(2).ToString();
+                    }
+                }
+
+                string sql = String.Format("select * from Relish where [Id] = {0};", rid);
 
                 using (SQLiteDataReader reader = SqlHelper.ExecuteReader(sql))
                 {
                     if (reader.Read())
                     {
-                        txt_RId.Text = reader.GetInt32(0).ToString().Trim(); //ID
+                        //txt_RId.Text = reader.GetInt32(0).ToString().Trim(); //ID
                         txt_SName.Text = reader.GetString(1).Trim();  //name
                         txt_Sunit.Text = reader.GetString(2).Trim(); //unit
                         txt_Sstand.Text = reader.GetString(3).Trim(); // standard
                         txt_SAllNum.Text = reader.GetInt32(4).ToString(); // number
-                        double priceOne = Convert.ToDouble(reader.GetValue(5).ToString());
+                        double priceOne = 0;
+                        if (price!=string.Empty)
+                            priceOne = Convert.ToDouble(price.ToString());
+                        else
+                            priceOne = Convert.ToDouble(reader.GetValue(5).ToString());
                         txt_SPriOne.Text = Math.Round(priceOne, 2).ToString() + "元"; //price one
                         double priceAll = Convert.ToDouble(Convert.ToDouble(reader.GetValue(5).ToString())) * Convert.ToInt32(txt_SAllNum.Text);
                         txt_SAllPrice.Text = Math.Round(priceAll, 2).ToString() + "元"; //priceall
@@ -201,60 +219,273 @@ namespace Test4
             lbl_add.Text = txt_Cadd.Text;
 
             btn_Confrim.Enabled = false;
+            txt_CId.Enabled = false;
+            txt_CName.Enabled = false;
+            txt_Ctel.Enabled = false;
+            txt_Cadd.Enabled = false;
         }
 
         private void txt_SSellNum_TextChanged(object sender, EventArgs e)
         {
+            SSellNumChange();
+        }
+
+        private void SSellNumChange()
+        {
             string price = new StringBuilder(txt_SAllPrice.Text).Remove(txt_SAllPrice.Text.Length - 1, 1).ToString();
             int num;
-            if(Int32.TryParse(txt_SSellNum.Text,out num))
+            if (Int32.TryParse(txt_SSellNum.Text, out num))
             {
-                txt_SAllMoney.Text = Math.Round(Convert.ToDouble(price) * num,2).ToString()+"元";
+                txt_SAllMoney.Text = Math.Round(Convert.ToDouble(price) * num, 2).ToString() + "元";
             }
         }
 
         private void btn_Clear_Click(object sender, EventArgs e)
         {
             table = initTable();
+            list = new List<MData>();
+            dataGridView1.DataSource = table;
             btn_Confrim.Enabled = true;
+            txt_CId.Enabled = true;
+            txt_CName.Enabled = true;
+            txt_Ctel.Enabled = true;
+            txt_Cadd.Enabled = true;
             lbl_name.Text = "空";
             lbl_tel.Text = "空";
             lbl_add.Text = "空";
         }
 
+        
+
         private void btn_Add_Click(object sender, EventArgs e)
         {
-            DataRow dr = table.NewRow();
-            AddToRow(dr);
-            table.Rows.Add(dr);
+            if (MessageBox.Show("确定添加？", "确认", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                ConIsChange();
+
+                MData data = GetData();
+                DataRow dr = table.NewRow();
+                list.Add(data);
+                AddToRow(dr, data);
+                table.Rows.Add(dr);
+                dataGridView1.DataSource = table;
+            }   
+        }
+        /// <summary>
+        /// 检查价格是否变化了
+        /// </summary>
+        private void ConIsChange()
+        {
+            int Cid = Convert.ToInt32(txt_CId.Text);
+            int Rid = Convert.ToInt32(txt_RId.Text);
+            string price = new StringBuilder(txt_SPriOne.Text).Remove(txt_SPriOne.Text.Length-1,1).ToString();
+            string Sprice = null; ;
+            bool flag = false; ;
+            string sql = String.Format("select * from Relish where [Id] = {0};", Cid);
+
+            using (SQLiteDataReader reader = SqlHelper.ExecuteReader(sql))
+            {
+                if (reader.Read())
+                {
+                    Sprice = reader.GetValue(5).ToString(); //price one
+
+                }
+            }
+
+            if(!price.Equals(Sprice))
+            {
+                sql = String.Format("select * from Part where [ClientId] = {0} and [RelishId] = {1};", Cid, Rid);
+                using (SQLiteDataReader reader = SqlHelper.ExecuteReader(sql))
+                {
+                    if (reader.Read())
+                    {
+                        Sprice = reader.GetValue(2).ToString();
+                        flag = true;
+                     }
+                    else
+                    {
+                        if (MessageBox.Show("发现价格发生变化，是否设定本单价为客户特殊价格？", "确认", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                        {
+                            sql = String.Format("insert into Part([ClientId],[RelishId],[priceone]) values({0},{1},{2})", Cid, Rid, price);
+                            int n = SqlHelper.ExecuteNonQuery(sql);
+                            {
+                                if (n > 0)
+                                {
+                                    MessageBox.Show("修改成功！");
+                                }
+                            }
+                            return;
+                        }
+                        
+                    }
+                }
+            }
+
+            if (!price.Equals(Sprice) && flag == true)
+            {
+                if (MessageBox.Show("发现价格发生变化，是否修改本单价为客户特殊价格？", "确认", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    sql = String.Format("update Part set [priceone]={2} where [ClientId]={0} and [RelishId]={1};", Cid, Rid, price);
+                    int n = SqlHelper.ExecuteNonQuery(sql);
+                    {
+                        if (n > 0)
+                        {
+                            MessageBox.Show("修改成功！");
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private MData GetData()
+        {
+            int id = Convert.ToInt32(txt_RId.Text);
+            string name = txt_SName.Text;
+            string unit = txt_Sunit.Text;
+            string stand = txt_Sstand.Text;
+            string sAllNum = txt_SAllNum.Text;
+            string SellNum = txt_SSellNum.Text;
+            string PriOne = txt_SPriOne.Text;
+            string AllPrice = txt_SAllPrice.Text;
+            string AllMoney = txt_SAllMoney.Text;
+            string Note = txt_SNote.Text;
+
+            return new MData(id,name, unit, stand, sAllNum, SellNum, PriOne, AllPrice, AllMoney, Note);  
         }
 
         /// <summary>
         /// 将左边的数据填充到row中
         /// </summary>
         /// <param name="dr"></param>
-        private void AddToRow(DataRow dr)
+        private void AddToRow(DataRow dr, MData data)
         {
-            //throw new NotImplementedException();
+            dr[1] = data.Name;
+            dr[2] = data.Unit;
+            dr[3] = data.Stand;
+            dr[4] = data.SellNum;
+            dr[5] = data.PriOne;
+            dr[6] = data.AllPrice;
+            dr[7] = data.AllMoney;
+            dr[8] = data.Name;
         }
 
         private void btn_Del_Click(object sender, EventArgs e)
         {
+            DelData();
+
+        }
+
+        private void DelData()
+        {
+            if (dataGridView1.CurrentRow == null)
+            {
+                return;
+            }
+
             if (dataGridView1.CurrentRow.Index < 0)
             {
                 return;
             }
             int id = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value.ToString());
 
-            foreach (DataRow row in table.Rows)
+            list.RemoveAt(id - 1);
+
+            AddListToTable();
+        }
+
+        private void AddListToTable()
+        {
+            table = initTable();
+            foreach (var item in list)
             {
-                if (Convert.ToInt32(row[0]) == id)
-                {
-                    row.Delete();
-                    return;     
-                }
+                DataRow dr = table.NewRow();
+                AddToRow(dr, item);
+                table.Rows.Add(dr);
+            }
+            dataGridView1.DataSource = table;
+        }
+
+        private void btn_Update_Click(object sender, EventArgs e)
+        {
+            UpdateDate();
+        }
+
+        private void UpdateDate()
+        {
+            if (dataGridView1.CurrentRow == null)
+            {
+                return;
             }
 
+            if (dataGridView1.CurrentRow.Index < 0)
+            {
+                return;
+            }
+            int id = Convert.ToInt32(dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells[0].Value.ToString());
+
+            list.RemoveAt(id - 1);
+            list.Insert(id - 1, GetData());
+
+            AddListToTable();
+        }
+
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow.Index < 0)
+            {
+                return;
+            }
+            int id = dataGridView1.CurrentRow.Index;
+
+            MData md = list[id];
+
+            ShowData(md);
+    
+        }
+
+        private void ShowData(MData md)
+        {
+            txt_RId.Text = md.Id.ToString();
+            txt_SName.Text = md.Name.ToString();
+            txt_Sunit.Text = md.Unit.ToString();
+            txt_Sstand.Text = md.Stand.ToString();
+            txt_SAllNum.Text = md.SAllNum.ToString();
+            txt_SSellNum.Text = md.SellNum.ToString();
+            txt_SPriOne.Text = md.PriOne.ToString();
+            txt_SAllPrice.Text = md.AllPrice.ToString();
+            txt_SAllMoney.Text = md.AllMoney.ToString();
+            txt_SNote.Text = md.Note.ToString();
+        }
+
+        private void 删除ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DelData();
+        }
+
+        private void 修改ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            UpdateDate();
+        }
+
+        private void showPri_Click(object sender, EventArgs e)
+        {
+            new Par().Show();
+        }
+
+        private void txt_SPriOne_TextChanged(object sender, EventArgs e)
+        {
+            if (txt_SPriOne.Text == null)
+            {
+                return;
+            }
+            string pO=new StringBuilder(txt_SPriOne.Text).Remove(txt_SPriOne.Text.Length-1,1).ToString(), num = txt_SAllNum.Text;
+
+            double priceOne = Convert.ToDouble(pO.ToString());
+            double priceAll = Convert.ToDouble(priceOne) * Convert.ToInt32(num);
+            txt_SAllPrice.Text = Math.Round(priceAll, 2).ToString() + "元"; //priceall
+
+            SSellNumChange();
         }
     }
 }
