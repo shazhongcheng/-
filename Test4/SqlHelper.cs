@@ -41,6 +41,13 @@ namespace Test4
 
         /// <summary>
         /// ---添加表
+        /// id 自增编号
+        /// name 品名
+        /// unit 单位
+        /// standard 规格
+        /// number 每箱数量
+        /// priceone 单价
+        /// note 备注
         /// </summary>
         public static void CreateRelishTable()
         {
@@ -68,7 +75,7 @@ namespace Test4
                 cn.Open();
                 SQLiteCommand cmd = new SQLiteCommand();
                 cmd.Connection = cn;
-                cmd.CommandText = "CREATE TABLE IF NOT EXISTS Part([Id] [INTEGER] IDENTITY(1000,1) PRIMARY KEY,[name][nvarchar](50) NOT NULL,[telephone] [varchar] (200) NOT NULL,[address] [nvarchar] (200) NOT NULL)";
+                cmd.CommandText = "CREATE TABLE IF NOT EXISTS Part([ClientId][int] NOT NULL,[RelishId] [int] NOT NULL,[priceone] [decimal](18, 2) NULL);";
                 //cmd.CommandText = "CREATE TABLE IF NOT EXISTS t1(id varchar(4),score int)";
                 cmd.ExecuteNonQuery();
             }
@@ -96,29 +103,27 @@ namespace Test4
             return 0;
         }
 
-        /// <summary>
-        /// 2.执行查询,返回单个值的方法
-        /// </summary>
-        /// <param name="sql">Sql命令</param>
-        /// <returns>返回查询的单个值</returns>
-        public static object ExecuteScalar(string sql)
-        {
-            using (SQLiteConnection cn = new SQLiteConnection("data source=" + Path))
-            {
-                if (cn.State != System.Data.ConnectionState.Open)
-                {
-                    cn.Open();
-                    using (SQLiteCommand cmd = new SQLiteCommand())
-                    {
-                        cmd.Connection = cn;
-                        cmd.CommandText = sql;
-                        return cmd.ExecuteNonQuery();
-                    }              
-                }
-                return null;
-               
-            }
-        }
+        ///// <summary>
+        ///// 2.执行查询,返回单个值的方法
+        ///// </summary>
+        ///// <param name="sql">Sql命令</param>
+        ///// <returns>返回查询的单个值</returns>
+        //public static object ExecuteScalar(string sql)
+        //{
+        //    SQLiteConnection cn = new SQLiteConnection("data source=" + Path);
+        //    if (cn.State != System.Data.ConnectionState.Open)
+        //    {
+        //        using (SQLiteCommand cmd = new SQLiteCommand())
+        //        {
+        //            cmd.Connection = cn;
+        //            cmd.CommandText = sql;
+        //            cn.Open();
+        //            return cmd.ExecuteNonQuery();
+        //        }              
+        //    }
+        //    cn.Close();
+        //    return null;
+        //}
 
         /// <summary>
         /// 3.执行查询,返回多行,多列的方法
