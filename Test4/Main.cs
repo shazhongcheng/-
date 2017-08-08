@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Test4
 
         static string CID_IS_NULL = "客户编号为空！";
         static string RID_IS_NULL = "商品编号为空！";
+        ClientData cd;
         DataTable table;
         List<MData> list = new List<MData>();
 
@@ -51,7 +53,7 @@ namespace Test4
 
             DataColumn row = new DataColumn();
             row.DataType = System.Type.GetType("System.Int32");
-            row.ColumnName = "ID";
+            row.ColumnName = "编号";
             row.AutoIncrement = true;
             row.AutoIncrementSeed=1;
             table.Columns.Add(row);
@@ -214,11 +216,18 @@ namespace Test4
 
         private void btn_Confrim_Click(object sender, EventArgs e)
         {
-            lbl_name.Text = txt_CName.Text;
-            lbl_tel.Text = txt_Ctel.Text;
-            lbl_add.Text = txt_Cadd.Text;
+            lbl_name.Text = txt_CName.Text.Trim();
+            lbl_tel.Text = txt_Ctel.Text.Trim();
+            lbl_add.Text = txt_Cadd.Text.Trim();
 
+            cd = new ClientData(lbl_name.Text, lbl_tel.Text, lbl_add.Text, lbl_date.Text);
+
+            txt_RId.Enabled = true;
+            btn_Produce.Enabled = true;
+            btn_Add.Enabled = true;
             btn_Confrim.Enabled = false;
+            
+
             txt_CId.Enabled = false;
             txt_CName.Enabled = false;
             txt_Ctel.Enabled = false;
@@ -246,10 +255,11 @@ namespace Test4
             list = new List<MData>();
             dataGridView1.DataSource = table;
             btn_Confrim.Enabled = true;
+            btn_Add.Enabled = false;
+            btn_Produce.Enabled = false;
+            txt_RId.Enabled = false ;
+
             txt_CId.Enabled = true;
-            txt_CName.Enabled = true;
-            txt_Ctel.Enabled = true;
-            txt_Cadd.Enabled = true;
             lbl_name.Text = "空";
             lbl_tel.Text = "空";
             lbl_add.Text = "空";
@@ -266,11 +276,25 @@ namespace Test4
                 MData data = GetData();
                 DataRow dr = table.NewRow();
                 list.Add(data);
-                AddToRow(dr, data);
-                table.Rows.Add(dr);
+                AddListToTable();
                 dataGridView1.DataSource = table;
+                ChangeAllMoney();
             }   
         }
+        /// <summary>
+        /// 变化总价
+        /// </summary>
+        private void ChangeAllMoney()
+        {
+            double all=0;
+            foreach (var item in list)
+            {
+                double one = Convert.ToDouble(new StringBuilder(item.AllMoney).Remove(item.AllMoney.Length-1,1).ToString());
+                all += one;
+            }
+            lbl_All.Text = all.ToString()+"元";
+        }
+
         /// <summary>
         /// 检查价格是否变化了
         /// </summary>
@@ -281,7 +305,7 @@ namespace Test4
             string price = new StringBuilder(txt_SPriOne.Text).Remove(txt_SPriOne.Text.Length-1,1).ToString();
             string Sprice = null; ;
             bool flag = false; ;
-            string sql = String.Format("select * from Relish where [Id] = {0};", Cid);
+            string sql = String.Format("select * from Relish where [Id] = {0};", Rid);
 
             using (SQLiteDataReader reader = SqlHelper.ExecuteReader(sql))
             {
@@ -367,7 +391,7 @@ namespace Test4
             dr[5] = data.PriOne;
             dr[6] = data.AllPrice;
             dr[7] = data.AllMoney;
-            dr[8] = data.Name;
+            dr[8] = data.Note;
         }
 
         private void btn_Del_Click(object sender, EventArgs e)
@@ -486,6 +510,30 @@ namespace Test4
             txt_SAllPrice.Text = Math.Round(priceAll, 2).ToString() + "元"; //priceall
 
             SSellNumChange();
+        }
+
+        private void btn_Produce_Click(object sender, EventArgs e)
+        {
+            if(cd!=null)
+            {
+                SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+                saveFileDialog1.Filter = "Excel 97-2003 工作簿|*.xls";
+                saveFileDialog1.Title = "保存文件";
+                saveFileDialog1.ShowDialog();
+                // If the file name is not an empty string open it for saving.  
+                if (saveFileDialog1.FileName != "")
+                {
+                    string path = saveFileDialog1.FileName;
+                    using (var fs = File.OpenWrite(path))
+                    {
+                        NOIPHelper.BuildWorkbook1(table, cd, "兴化市彬旺调味食品厂", lbl_All.Text).Write(fs);
+                        //Console.WriteLine("生成成功");
+                    }
+                    MessageBox.Show("生成成功！");
+                }
+            }
+
+           
         }
     }
 }

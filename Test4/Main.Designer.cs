@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.showPri = new System.Windows.Forms.Button();
             this.btn_Confrim = new System.Windows.Forms.Button();
             this.RidIsR = new System.Windows.Forms.Label();
             this.CidIsR = new System.Windows.Forms.Label();
@@ -79,13 +80,19 @@
             this.dvm = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.删除ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.修改ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showPri = new System.Windows.Forms.Button();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.lbl_All = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.dvm.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -145,10 +152,21 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
             this.splitContainer1.Size = new System.Drawing.Size(1261, 637);
             this.splitContainer1.SplitterDistance = 475;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // showPri
+            // 
+            this.showPri.Location = new System.Drawing.Point(309, 602);
+            this.showPri.Name = "showPri";
+            this.showPri.Size = new System.Drawing.Size(122, 23);
+            this.showPri.TabIndex = 18;
+            this.showPri.Text = "显示所有特殊价格";
+            this.showPri.UseVisualStyleBackColor = true;
+            this.showPri.Visible = false;
+            this.showPri.Click += new System.EventHandler(this.showPri_Click);
             // 
             // btn_Confrim
             // 
@@ -190,6 +208,7 @@
             // 
             // txt_RId
             // 
+            this.txt_RId.Enabled = false;
             this.txt_RId.Location = new System.Drawing.Point(81, 201);
             this.txt_RId.Name = "txt_RId";
             this.txt_RId.Size = new System.Drawing.Size(146, 21);
@@ -292,12 +311,14 @@
             // 
             // btn_Produce
             // 
+            this.btn_Produce.Enabled = false;
             this.btn_Produce.Location = new System.Drawing.Point(176, 557);
             this.btn_Produce.Name = "btn_Produce";
             this.btn_Produce.Size = new System.Drawing.Size(75, 23);
             this.btn_Produce.TabIndex = 7;
             this.btn_Produce.Text = "生成";
             this.btn_Produce.UseVisualStyleBackColor = true;
+            this.btn_Produce.Click += new System.EventHandler(this.btn_Produce_Click);
             // 
             // btn_Update
             // 
@@ -321,6 +342,7 @@
             // 
             // btn_Add
             // 
+            this.btn_Add.Enabled = false;
             this.btn_Add.Location = new System.Drawing.Point(64, 505);
             this.btn_Add.Name = "btn_Add";
             this.btn_Add.Size = new System.Drawing.Size(75, 23);
@@ -340,6 +362,7 @@
             // 
             // txt_SNote
             // 
+            this.txt_SNote.Enabled = false;
             this.txt_SNote.Location = new System.Drawing.Point(309, 302);
             this.txt_SNote.Name = "txt_SNote";
             this.txt_SNote.Size = new System.Drawing.Size(146, 21);
@@ -347,6 +370,7 @@
             // 
             // txt_SAllNum
             // 
+            this.txt_SAllNum.Enabled = false;
             this.txt_SAllNum.Location = new System.Drawing.Point(309, 168);
             this.txt_SAllNum.Name = "txt_SAllNum";
             this.txt_SAllNum.Size = new System.Drawing.Size(146, 21);
@@ -354,6 +378,7 @@
             // 
             // txt_SAllPrice
             // 
+            this.txt_SAllPrice.Enabled = false;
             this.txt_SAllPrice.Location = new System.Drawing.Point(309, 217);
             this.txt_SAllPrice.Name = "txt_SAllPrice";
             this.txt_SAllPrice.Size = new System.Drawing.Size(146, 21);
@@ -361,6 +386,7 @@
             // 
             // txt_Sstand
             // 
+            this.txt_Sstand.Enabled = false;
             this.txt_Sstand.Location = new System.Drawing.Point(309, 36);
             this.txt_Sstand.Name = "txt_Sstand";
             this.txt_Sstand.Size = new System.Drawing.Size(146, 21);
@@ -395,6 +421,7 @@
             // 
             // txt_Cadd
             // 
+            this.txt_Cadd.Enabled = false;
             this.txt_Cadd.Location = new System.Drawing.Point(81, 162);
             this.txt_Cadd.Name = "txt_Cadd";
             this.txt_Cadd.Size = new System.Drawing.Size(146, 21);
@@ -411,6 +438,7 @@
             // 
             // txt_SAllMoney
             // 
+            this.txt_SAllMoney.Enabled = false;
             this.txt_SAllMoney.Location = new System.Drawing.Point(309, 254);
             this.txt_SAllMoney.Name = "txt_SAllMoney";
             this.txt_SAllMoney.Size = new System.Drawing.Size(146, 21);
@@ -444,6 +472,7 @@
             // 
             // txt_Sunit
             // 
+            this.txt_Sunit.Enabled = false;
             this.txt_Sunit.Location = new System.Drawing.Point(81, 292);
             this.txt_Sunit.Name = "txt_Sunit";
             this.txt_Sunit.Size = new System.Drawing.Size(146, 21);
@@ -460,6 +489,7 @@
             // 
             // txt_Ctel
             // 
+            this.txt_Ctel.Enabled = false;
             this.txt_Ctel.Location = new System.Drawing.Point(81, 124);
             this.txt_Ctel.Name = "txt_Ctel";
             this.txt_Ctel.Size = new System.Drawing.Size(146, 21);
@@ -502,6 +532,7 @@
             // 
             // txt_SName
             // 
+            this.txt_SName.Enabled = false;
             this.txt_SName.Location = new System.Drawing.Point(81, 257);
             this.txt_SName.Name = "txt_SName";
             this.txt_SName.Size = new System.Drawing.Size(146, 21);
@@ -518,6 +549,7 @@
             // 
             // txt_CName
             // 
+            this.txt_CName.Enabled = false;
             this.txt_CName.Location = new System.Drawing.Point(81, 89);
             this.txt_CName.Name = "txt_CName";
             this.txt_CName.Size = new System.Drawing.Size(146, 21);
@@ -553,7 +585,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowTemplate.Height = 23;
-            this.dataGridView1.Size = new System.Drawing.Size(782, 637);
+            this.dataGridView1.Size = new System.Drawing.Size(782, 595);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
@@ -579,16 +611,42 @@
             this.修改ToolStripMenuItem.Text = "修改";
             this.修改ToolStripMenuItem.Click += new System.EventHandler(this.修改ToolStripMenuItem_Click);
             // 
-            // showPri
+            // splitContainer2
             // 
-            this.showPri.Location = new System.Drawing.Point(309, 602);
-            this.showPri.Name = "showPri";
-            this.showPri.Size = new System.Drawing.Size(122, 23);
-            this.showPri.TabIndex = 18;
-            this.showPri.Text = "显示所有特殊价格";
-            this.showPri.UseVisualStyleBackColor = true;
-            this.showPri.Visible = false;
-            this.showPri.Click += new System.EventHandler(this.showPri_Click);
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.dataGridView1);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.label16);
+            this.splitContainer2.Panel2.Controls.Add(this.lbl_All);
+            this.splitContainer2.Size = new System.Drawing.Size(782, 637);
+            this.splitContainer2.SplitterDistance = 595;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // lbl_All
+            // 
+            this.lbl_All.AutoSize = true;
+            this.lbl_All.Location = new System.Drawing.Point(625, 14);
+            this.lbl_All.Name = "lbl_All";
+            this.lbl_All.Size = new System.Drawing.Size(23, 12);
+            this.lbl_All.TabIndex = 0;
+            this.lbl_All.Text = "0元";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(18, 14);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(41, 12);
+            this.label16.TabIndex = 1;
+            this.label16.Text = "合计：";
             // 
             // Form1
             // 
@@ -606,6 +664,11 @@
             this.splitContainer1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.dvm.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            this.splitContainer2.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -663,6 +726,9 @@
         private System.Windows.Forms.ToolStripMenuItem 删除ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 修改ToolStripMenuItem;
         private System.Windows.Forms.Button showPri;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.Label lbl_All;
+        private System.Windows.Forms.Label label16;
     }
 }
 

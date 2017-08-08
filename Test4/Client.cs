@@ -246,5 +246,20 @@ namespace Test4
             dataGridView1.DataSource = table;
 
         }
+
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentRow.Index < 0)
+            {
+                return;
+            }
+            int id = dataGridView1.CurrentRow.Index;
+
+            txt_CId.Text = dataGridView1.Rows[id].Cells[0].Value.ToString();
+            txt_CName.Text = dataGridView1.Rows[id].Cells[1].Value.ToString();
+            txt_Ctel.Text = dataGridView1.Rows[id].Cells[2].Value.ToString();
+            txt_Cadd.Text = dataGridView1.Rows[id].Cells[3].Value.ToString();
+
+        }
     }
 }
